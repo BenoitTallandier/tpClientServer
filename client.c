@@ -7,14 +7,33 @@
 #include <netinet/in.h> 
 #include <arpa/inet.h>
 
+
 int main(){
+
+	void * ecoute(void * arg){
+		int dialogSocket = (int)arg;
+		char messageReception[2052] = " ";
+		char messageVide[2052] = " ";
+		while(1){
+			recv(dialogSocket,messageReception,2052,0);
+			if(memcmp(&messageReception,&messageVide,2052)!=0 ){
+				printf("%s",messageReception);			
+			}
+			strcpy(messageReception,"");
+		}
+	}
+
 	printf("start client \n");
+
+	char messageEnvoye[2048];
+	pthread_t * thread;
+	thread = malloc(sizeof(pthread_t));
 
 	struct sockaddr_in client_addr;
 	int dialogSocket;
 	char message[10];
 
-	client_addr.sin_addr.s_addr = inet_addr("192.168.1.44");
+	client_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	client_addr.sin_port = htons(2499); /* on utilise htons pour le port */
 	client_addr.sin_family = AF_INET;
 
@@ -26,9 +45,12 @@ int main(){
 	if(connect(dialogSocket,(struct sockaddr *) &client_addr, sizeof(client_addr)) < 0){
 		perror("erreur connect \n");
 	}
-
-	recv(dialogSocket , message , 10 , 0);
-	printf("message : %s \n",message );
+	pthread_create(&thread,NULL,ecoute,(void*)dialogSocket);
+	while(1){
+		fgets(messageEnvoye, sizeof(messageEnvoye), stdin);
+		//scanf("%s", messageEnvoye);
+		send(dialogSocket,messageEnvoye,2048,0);
+	}
 	printf("end client \n");
 	return 0;
 }
