@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
-#include <netinet/in.h> 
+#include <netinet/in.h>
 #include <arpa/inet.h>
 #include <pthread.h>
 #include <math.h>
@@ -18,7 +18,7 @@ struct argThread{
 
 void * ecoute(void * arg){
 	printf("		demarage thread\n");
-	char message[2048]="connection : OK\n";
+	char message[2048]="Serveur>> Connection : OK\n";
 	char messageVide[2048] = "";
 	char messageFormate[2052] = "";
 	struct argThread * argument = (struct argThread *)arg;
@@ -27,9 +27,15 @@ void * ecoute(void * arg){
 	int * nbConnection = argument->nbConnection;
 	int result = 1;
 	send(dialogSocket,message,sizeof(message),0);
+	for(int i=0;i<fmin(10,*nbConnection);i++){
+		if(listClient[i]>0){
+			sprintf(messageFormate,"Serveur>> %d a rejoint\n",dialogSocket);
+			printf("		envoi du message arrive à %d  : '''%s'''\n",listClient[i],messageFormate);
+			send(listClient[i], messageFormate, sizeof(messageFormate),0);
+		}
+ 	}
 	while(result!=0){
 		printf("		demarage boucle\n" );
-
 		if( (result = recv(dialogSocket , message , 2048 , 0))>0){
 			if(memcmp(&message,&messageVide,2048)!=0 ){
 				printf("		message recv from %d : %s\n",dialogSocket,message );
@@ -38,7 +44,7 @@ void * ecoute(void * arg){
 						printf("			envoi de message au client %d = %d \n",i,listClient[i]);
 						sprintf(messageFormate,"%d>> ",dialogSocket);
 						strcat(messageFormate,message);
-						send(listClient[i], messageFormate, sizeof(message),0);
+						send(listClient[i], messageFormate, sizeof(messageFormate),0);
 					}
 				}
 				printf("\n");
@@ -51,9 +57,13 @@ void * ecoute(void * arg){
 		if(dialogSocket == listClient[i]){
 			printf("	client %d lived\n",dialogSocket);
 			listClient[i]=-1;
-			return ;
+		}
+		else{
+			sprintf(messageFormate,"Serveur>> %d is gone \n",dialogSocket);
+			send(listClient[i],messageFormate,sizeof(messageFormate),0);
 		}
 	}
+	return ;
 }
 
 
@@ -70,9 +80,9 @@ int main(){
 	struct sockaddr_in serv_addr, cli_addr;
 	int socketServer,clilen;
 	int * listClient;
-	listClient = malloc(10*sizeof(int)); 
+	listClient = malloc(10*sizeof(int));
 	memset(&serv_addr, 0, sizeof(serv_addr));
-	
+
 	clilen = sizeof(cli_addr);
 	/* configuration de serv_addr */
 	serv_addr.sin_family = 	AF_INET;

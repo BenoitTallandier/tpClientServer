@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
-#include <netinet/in.h> 
+#include <netinet/in.h>
 #include <arpa/inet.h>
 
 
@@ -16,9 +16,9 @@ int main(){
 		char messageVide[2052] = " ";
 		while(1){
 			recv(dialogSocket,messageReception,2052,0);
-			if(memcmp(&messageReception,&messageVide,2052)!=0 ){
-				printf("%s",messageReception);			
-			}
+			//if(memcmp(&messageReception,&messageVide,2052)!=0 ){
+				printf("%s",messageReception);
+			//}
 			strcpy(messageReception,"");
 		}
 	}
@@ -41,7 +41,7 @@ int main(){
 		perror("echec de création socket \n");
 	}
 
-	
+
 	if(connect(dialogSocket,(struct sockaddr *) &client_addr, sizeof(client_addr)) < 0){
 		perror("erreur connect \n");
 	}
