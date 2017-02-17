@@ -8,13 +8,12 @@
 #include <arpa/inet.h>
 
 
-int main(){
+int main(int argc, char const *argv[]){
 
 	void * ecoute(void * arg){
 		int dialogSocket = (int)arg;
 		char messageReception[2052] = "";
 		while(1){
-			messageReception = "";
 			recv(dialogSocket,messageReception,2052,0);
 			//if(memcmp(&messageReception,&messageVide,2052)!=0 ){
 				printf("%s",messageReception);
@@ -34,7 +33,9 @@ int main(){
 	char message[10];
 
 	client_addr.sin_addr.s_addr = inet_addr("137.74.194.232");
-	client_addr.sin_port = htons(2499); /* on utilise htons pour le port */
+//	client_addr.sin_addr.s_addr = inet_addr("82.216.253.246");
+	//client_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	client_addr.sin_port = htons(atoi(argv[1])); /* on utilise htons pour le port */
 	client_addr.sin_family = AF_INET;
 
 	if( (dialogSocket = socket(PF_INET,SOCK_STREAM,0))<0){
@@ -47,7 +48,7 @@ int main(){
 	}
 	pthread_create(&thread,NULL,ecoute,(void*)dialogSocket);
 	while(1){
-		fgets(messageEnvoye, sizeof(messageEnvoye), stdin);
+		fgets(messageEnvoye, strlen(messageEnvoye), stdin);
 		//scanf("%s", messageEnvoye);
 		send(dialogSocket,messageEnvoye,2048,0);
 	}

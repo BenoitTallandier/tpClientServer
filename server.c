@@ -67,8 +67,7 @@ void * ecoute(void * arg){
 }
 
 
-
-int main(){
+int main(int argc, char const *argv[]){
 	printf("start\n");
 
 	int i;
@@ -87,7 +86,7 @@ int main(){
 	/* configuration de serv_addr */
 	serv_addr.sin_family = 	AF_INET;
 	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY); // on peut recevoir les messages de toute ip
-	serv_addr.sin_port = htons(2499);
+	serv_addr.sin_port = htons(atoi(argv[1]));
 
 
 	if( (socketServer = socket(PF_INET, SOCK_STREAM,0))<0 ){
