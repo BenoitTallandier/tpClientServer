@@ -48,9 +48,9 @@ int main(int argc, char const *argv[]){
 	}
 	pthread_create(&thread,NULL,ecoute,(void*)dialogSocket);
 	while(1){
-		fgets(messageEnvoye, strlen(messageEnvoye), stdin);
+		fgets(messageEnvoye, 2048, stdin);
 		//scanf("%s", messageEnvoye);
-		send(dialogSocket,messageEnvoye,2048,0);
+		send(dialogSocket,messageEnvoye,strlen(messageEnvoye),0);
 	}
 	printf("end client \n");
 	return 0;

@@ -31,11 +31,13 @@ void * ecoute(void * arg){
 		if(listClient[i]>0){
 			sprintf(messageFormate,"Serveur>> %d a rejoint\n",dialogSocket);
 			printf("		envoi du message arrive à %d  : '''%s'''\n",listClient[i],messageFormate);
-			send(listClient[i], messageFormate, sizeof(messageFormate),0);
+			send(listClient[i], messageFormate, strlen(messageFormate),0);
 		}
  	}
 	while(result!=0){
 		printf("		demarage boucle\n" );
+		memset(message,'\0',2048);
+		memset(messageFormate,'\0',2052);
 		if( (result = recv(dialogSocket , message , 2048 , 0))>0){
 			if(memcmp(&message,&messageVide,2048)!=0 ){
 				printf("		message recv from %d : %s\n",dialogSocket,message );
