@@ -12,9 +12,9 @@ int main(){
 
 	void * ecoute(void * arg){
 		int dialogSocket = (int)arg;
-		char messageReception[2052] = " ";
-		char messageVide[2052] = " ";
+		char messageReception[2052] = "";
 		while(1){
+			messageReception = "";
 			recv(dialogSocket,messageReception,2052,0);
 			//if(memcmp(&messageReception,&messageVide,2052)!=0 ){
 				printf("%s",messageReception);
@@ -33,7 +33,7 @@ int main(){
 	int dialogSocket;
 	char message[10];
 
-	client_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	client_addr.sin_addr.s_addr = inet_addr("137.74.194.232");
 	client_addr.sin_port = htons(2499); /* on utilise htons pour le port */
 	client_addr.sin_family = AF_INET;
 
